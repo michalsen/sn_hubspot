@@ -1,0 +1,75 @@
+<?php
+/**
+ *  @file
+ *  SN Hubspot
+ *
+ *  There is a new OAuth version (2, I think) for Hubspot and the
+ *  standard D7 module is problematic.
+ *
+ *  This module is for testing proposes, and not built for
+ *  production
+ */
+
+/**
+ *  implements hook_menu()
+ */
+function sn_hubspot_menu() {
+  $items = array();
+  $items['admin/sn_hubspot'] = array(
+              'title' => 'SN Hubspot',
+              'page callback' => 'path_hubspot_page',
+              'access arguments' => array('administer access control'),
+              'access callback' => 'user_access',
+              'description' => 'SN Hubspot Control Page',
+              'type' => MENU_NORMAL_ITEM,
+          );
+   return $items;
+}
+
+
+/**
+ *  callback path_hubspot_page()
+ */
+function path_hubspot_page() {
+    return drupal_get_form('sn_hubspot_form');
+}
+
+
+/**
+ *  create form sn_hubspot_form()
+ */
+function sn_hubspot_form($form, &$form_state) {
+
+  $sn_hubspot = json_decode(variable_get('sn_hubspot'));
+
+  $form['hubspot']['portalid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('portalId'),
+    '#default_value' => $sn_hubspot->portalid,
+  );
+
+  $form['hubspot']['formguid'] = array(
+    '#type' => 'textfield',
+    '#title' => t('formGuid'),
+    '#default_value' => $sn_hubspot->formguid,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+
+  $form['#submit'][] = 'sn_hubspot_submit';
+
+  return $form;
+
+}
+
+/**
+ *  save admin form submission
+ */
+function sn_hubspot_submit($form, $form_state) {
+  $array['portalid'] = $form_state['input']['portalid'];
+  $array['formguid'] = $form_state['input']['formguid'];
+  variable_set('sn_hubspot', json_encode($array));
+}
