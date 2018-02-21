@@ -40,6 +40,8 @@ function path_hubspot_page() {
  */
 function sn_hubspot_form($form, &$form_state) {
 
+
+
   $sn_hubspot = json_decode(variable_get('sn_hubspot'));
 
   $form['hubspot']['portalid'] = array(
